@@ -1,0 +1,8 @@
+{
+  "name": "begotas cafe & restaurant Menu",
+  "description": "Digital Menu Web Application for begotas cafe & restaurant.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
