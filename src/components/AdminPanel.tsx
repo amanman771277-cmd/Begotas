@@ -95,14 +95,8 @@ export function AdminPanel({ menuItems, setMenuItems, onClose }: AdminPanelProps
     setIsUploading(true);
     const formData = new FormData();
     formData.append('file', file);
-    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || '[Cloudinary Preset]';
-    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || '[Cloudinary Cloud Name]';
-
-    if (uploadPreset === '[Cloudinary Preset]' || cloudName === '[Cloudinary Cloud Name]') {
-      alert('Cloudinary upload is not configured. Please add VITE_CLOUDINARY_UPLOAD_PRESET and VITE_CLOUDINARY_CLOUD_NAME to your environment variables, or use the direct Image URL field.');
-      setIsUploading(false);
-      return;
-    }
+    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'Begotas';
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'du5fpqadb';
 
     formData.append('upload_preset', uploadPreset);
     
