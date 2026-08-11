@@ -11,6 +11,7 @@ export interface MenuItem {
   image: string;
   inStock: boolean;
   isDailySpecial?: boolean;
+  createdAt?: string;
 }
 
 export type Language = 'en' | 'am';

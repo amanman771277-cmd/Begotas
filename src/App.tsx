@@ -131,13 +131,20 @@ export default function App() {
           image: data.image,
           inStock: data.inStock,
           isDailySpecial: data.isDailySpecial,
+          createdAt: data.createdAt,
         } as MenuItem;
       });
       
-      if (freshData.length > 0) {
-        setMenuItems(freshData);
-        localStorage.setItem('cached_menu_items', JSON.stringify(freshData));
-      }
+      // Sort by createdAt descending if available, otherwise by title
+      freshData.sort((a, b) => {
+        if (a.createdAt && b.createdAt) {
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        }
+        return a.titleEn.localeCompare(b.titleEn);
+      });
+      
+      setMenuItems(freshData);
+      localStorage.setItem('cached_menu_items', JSON.stringify(freshData));
       setIsSyncing(false);
     }, (error) => {
       console.error("Failed to fetch menu data", error);

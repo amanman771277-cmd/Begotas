@@ -1,6 +1,7 @@
 import React from 'react';
 import { MenuItem, Language } from '../types';
 import { motion } from 'motion/react';
+import { ensureHttps } from '../utils';
 
 interface MenuCardProps {
   key?: React.Key;
@@ -28,8 +29,11 @@ export function MenuCard({ item, lang, isSpecialView, isDarkMode }: MenuCardProp
     >
       <div className="relative h-48 w-full">
         <img 
-          src={item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=400'} 
+          src={ensureHttps(item.image) || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600'} 
           alt={title} 
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
+          }}
           className="w-full h-full object-cover rounded-t-3xl"
         />
         {isSpecialView && (

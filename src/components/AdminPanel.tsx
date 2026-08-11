@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { MenuItem, Category } from '../types';
 import { Plus, Edit2, Trash2, X, Check, Image as ImageIcon } from 'lucide-react';
-import { doc, setDoc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc, updateDoc, addDoc, collection } from 'firebase/firestore';
+import { ensureHttps } from '../utils';
 import { db } from '../firebase';
 
 interface AdminPanelProps {
@@ -66,25 +67,24 @@ export function AdminPanel({ menuItems, setMenuItems, onClose }: AdminPanelProps
 
     try {
       if (isAdding) {
-        const id = Date.now().toString();
-        const newItem: MenuItem = {
-          id: id,
+        const newItem = {
           titleEn: formData.titleEn || '',
           titleAm: formData.titleAm || '',
           descriptionEn: formData.descriptionEn || '',
           descriptionAm: formData.descriptionAm || '',
           price: Number(formData.price) || 0,
           category: formData.category as any || 'Hot Drinks',
-          image: formData.image || '',
+          image: ensureHttps(formData.image) || '',
           inStock: formData.inStock ?? true,
           isDailySpecial: formData.isDailySpecial ?? false,
+          createdAt: new Date().toISOString(),
         };
-        // Optimistic update
-        setMenuItems(prev => [newItem, ...prev]);
-        await setDoc(doc(db, 'menuItems', id), newItem);
+        
+        await addDoc(collection(db, 'menuItems'), newItem);
       } else {
         const updatedFields = { 
-          ...formData, 
+          ...formData,
+          image: ensureHttps(formData.image) || '', 
           price: Number(formData.price), 
           isDailySpecial: formData.isDailySpecial ?? false 
         };
@@ -345,7 +345,14 @@ export function AdminPanel({ menuItems, setMenuItems, onClose }: AdminPanelProps
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-[#FDFBF7] border border-[#4A2C2A]/5">
                           {item.image ? (
-                            <img src={item.image} alt={item.titleEn} className="w-full h-full object-cover" />
+                            <img 
+                              src={ensureHttps(item.image)} 
+                              alt={item.titleEn} 
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
+                              }}
+                              className="w-full h-full object-cover" 
+                            />
                           ) : (
                             <ImageIcon className="w-full h-full p-3 text-[#4A2C2A]/30" />
                           )}
