@@ -73,7 +73,7 @@ export function AdminPanel({ menuItems, setMenuItems, onClose }: AdminPanelProps
           descriptionEn: formData.descriptionEn || '',
           descriptionAm: formData.descriptionAm || '',
           price: Number(formData.price) || 0,
-          category: formData.category as any || 'Hot Drinks',
+          category: formData.category || 'Uncategorized',
           image: ensureHttps(formData.image) || '',
           inStock: formData.inStock ?? true,
           isDailySpecial: formData.isDailySpecial ?? false,
@@ -110,12 +110,12 @@ export function AdminPanel({ menuItems, setMenuItems, onClose }: AdminPanelProps
     setFormData({
       inStock: true,
       isDailySpecial: false,
-      category: 'Hot Drinks',
+      category: '',
       price: 0
     });
   };
 
-  const categories: Omit<Category, 'All'>[] = ['Hot Drinks', 'Cold Drinks', 'Burgers', 'Pastry'];
+  const existingCategories = Array.from(new Set(menuItems.map(item => item.category).filter(Boolean)));
 
   const [isUploading, setIsUploading] = useState(false);
 
@@ -233,16 +233,19 @@ export function AdminPanel({ menuItems, setMenuItems, onClose }: AdminPanelProps
               
               <div>
                 <label className="block text-sm text-[#4A2C2A]/70 mb-1">Category *</label>
-                <select 
+                <input 
+                  type="text"
+                  list="category-suggestions"
+                  placeholder="Select or type category"
                   value={formData.category || ''}
-                  onChange={e => setFormData({...formData, category: e.target.value as any})}
+                  onChange={e => setFormData({...formData, category: e.target.value})}
                   className="w-full bg-[#FDFBF7] border border-[#4A2C2A]/10 rounded-2xl p-3 text-[#4A2C2A] focus:border-[#9D3C3C] focus:ring-1 focus:ring-[#9D3C3C] outline-none"
-                >
-                  <option value="">Select Category</option>
-                  {categories.map(c => (
-                    <option key={c} value={c}>{c}</option>
+                />
+                <datalist id="category-suggestions">
+                  {existingCategories.map(c => (
+                    <option key={c} value={c} />
                   ))}
-                </select>
+                </datalist>
               </div>
 
               <div className="md:col-span-2">

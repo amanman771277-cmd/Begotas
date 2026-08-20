@@ -213,7 +213,11 @@ export default function App() {
     return menuItems.filter(item => item.isDailySpecial);
   }, [menuItems]);
 
-  const categories: Category[] = ['All', 'Hot Drinks', 'Cold Drinks', 'Burgers', 'Pastry'];
+  const dynamicCategories = useMemo(() => {
+    const uniqueCats = Array.from(new Set(menuItems.map(item => item.category).filter(Boolean)));
+    return ['All', ...uniqueCats];
+  }, [menuItems]);
+
   const isAm = lang === 'am';
 
   // --- Views ---
@@ -344,7 +348,7 @@ export default function App() {
 
           {/* Categories Horizontal Scroll */}
           <div className="flex overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 gap-3 scrollbar-hide">
-            {categories.map((cat) => (
+            {dynamicCategories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
@@ -356,7 +360,7 @@ export default function App() {
                       : 'bg-white text-[#4A2C2A]/80 hover:bg-[#FDFBF7] hover:text-[#4A2C2A] border border-[#4A2C2A]/10 shadow-sm'
                 }`}
               >
-                {t.categories[cat]}
+                {(t.categories as Record<string, string>)[cat] || cat}
               </button>
             ))}
           </div>

@@ -1,4 +1,4 @@
-export type Category = 'All' | 'Hot Drinks' | 'Cold Drinks' | 'Burgers' | 'Pastry';
+export type Category = string;
 
 export interface MenuItem {
   id: string;
@@ -7,7 +7,7 @@ export interface MenuItem {
   descriptionEn: string;
   descriptionAm: string;
   price: number;
-  category: Omit<Category, 'All'>;
+  category: string;
   image: string;
   inStock: boolean;
   isDailySpecial?: boolean;
