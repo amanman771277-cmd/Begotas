@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MenuItem, Language } from '../types';
 import { motion } from 'motion/react';
 import { ensureHttps } from '../utils';
@@ -12,6 +12,7 @@ interface MenuCardProps {
 }
 
 export function MenuCard({ item, lang, isSpecialView, isDarkMode }: MenuCardProps) {
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const isAm = lang === 'am';
   const title = isAm ? item.titleAm : item.titleEn;
   const description = isAm ? item.descriptionAm : item.descriptionEn;
@@ -27,14 +28,18 @@ export function MenuCard({ item, lang, isSpecialView, isDarkMode }: MenuCardProp
         isSpecialView ? 'border-[#9D3C3C] ring-1 ring-[#9D3C3C]/50' : ''
       }`}
     >
-      <div className="relative h-48 w-full">
+      <div className={`relative h-48 w-full ${isDarkMode ? 'bg-slate-800' : 'bg-gray-200'} ${!isImageLoaded ? 'animate-pulse' : ''}`}>
         <img 
           src={ensureHttps(item.image) || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600'} 
           alt={title} 
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setIsImageLoaded(true)}
           onError={(e) => {
             (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600';
+            setIsImageLoaded(true);
           }}
-          className="w-full h-full object-cover rounded-t-3xl"
+          className={`w-full h-full object-cover rounded-t-3xl transition-opacity duration-700 ease-in-out ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
         />
         {isSpecialView && (
           <div className="absolute top-3 left-3">
